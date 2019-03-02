@@ -83,5 +83,5 @@ function enqueue_load_bootstrap() {
 	wp_enqueue_script( 'bootstrap-js' );
 
 	//Font Awesome
-	wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/5.4.0/css/font-awesome.min.css'); 
+	//wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/5.4.0/css/font-awesome.min.css'); 
 }

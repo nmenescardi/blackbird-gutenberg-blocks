@@ -1,93 +1,197 @@
 /**
- * BLOCK: blackbird-gutenberg-blocks
  *
- * Registering a basic block with Gutenberg.
- * Simple block, renders and saves the same content without any interactivity.
+ * BLOCK: Team Members
+ * block-gbg-nrm-team-members
+ *
  */
-
-//  Import CSS.
 import './style.scss';
 import './editor.scss';
 
-const { __ } = wp.i18n; // Import __() from wp.i18n
-const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
+import classnames from 'classnames';
+import AddRowButton from '../../00-common/01-components/AddRowButton';
+import DeleteRowButton from '../../00-common/01-components/DeleteRowButton';
+import BackgroundImageInRow from '../../00-common/01-components/BackgroundImageInRow';
+import PlainTextInRow from '../../00-common/01-components/PlainTextInRow';
 
-/**
- * Register: aa Gutenberg Block.
- *
- * Registers a new block provided a unique name and an object defining its
- * behavior. Once registered, the block is made editor as an option to any
- * editor interface where blocks are implemented.
- *
- * @link https://wordpress.org/gutenberg/handbook/block-api/
- * @param  {string}   name     Block name.
- * @param  {Object}   settings Block settings.
- * @return {?WPBlock}          The block, if it has been successfully
- *                             registered; otherwise `undefined`.
- */
-registerBlockType( 'cgb/block-blackbird-gutenberg-blocks', {
-	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-	title: __( 'blackbird-gutenberg-blocks - CGB Block' ), // Block title.
-	icon: 'shield', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
-	category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
-	keywords: [
-		__( 'blackbird-gutenberg-blocks — CGB Block' ),
-		__( 'CGB Example' ),
-		__( 'create-guten-block' ),
-	],
+const { __ } = wp.i18n;
+const { registerBlockType } = wp.blocks;
+const { PlainText } = wp.editor;
 
-	/**
-	 * The edit function describes the structure of your block in the context of the editor.
-	 * This represents what the editor will render when the block is used.
-	 *
-	 * The "edit" property must be a valid function.
-	 *
-	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
-	 */
-	edit: function( props ) {
-		// Creates a <p class='wp-block-cgb-block-blackbird-gutenberg-blocks'></p>.
+registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
+	title: __('Team Members'),
+	icon: 'groups',
+	category: 'common',
+	keywords: [],
+	attributes: {
+		title: {
+			type: 'string',
+			default: 'Our Team'
+		},
+		members: {
+			type: 'array',
+			default: []
+		}
+	},
+
+	edit: props => {
+		const {
+			attributes: { title, members },
+			className,
+			isSelected,
+			setAttributes
+		} = props;
+
+		const addNewMember = () => {
+			setAttributes({ members: [...members, {}] });
+		};
+
 		return (
-			<div className={ props.className }>
-				<p>— Hello from the backend.</p>
-				<p>
-					CGB BLOCK: <code>blackbird-gutenberg-blocks</code> is a new Gutenberg block
-				</p>
-				<p>
-					It was created via{ ' ' }
-					<code>
-						<a href="https://github.com/ahmadawais/create-guten-block">
-							create-guten-block
-						</a>
-					</code>.
-				</p>
+			<div
+				className={classnames('bgb-nrm-general-styles', className, {
+					'block-selected': isSelected
+				})}
+			>
+				<div className="title-wrapper">
+					<p className="general-block-title">{__('Title:', 'bgb-nrm')}</p>
+					{isSelected ? (
+						<PlainText
+							value={title}
+							onChange={title => setAttributes({ title })}
+							placeholder={__('Title', 'bgb-nrm')}
+						/>
+					) : (
+						<p class="unselected-block-text">{title}</p>
+					)}
+				</div>
+
+				<div className="team-members-container">
+					{isSelected && (
+						<p className="general-block-title">{__('Items: ', 'bgb-nrm')}</p>
+					)}
+
+					{members.map((member, index) => {
+						return (
+							<div className="member-wrapper" key="index">
+								{isSelected && (
+									<p className="general-block-title">
+										{__('Member Nº ', 'bgb-nrm') + (index + 1) + ': '}
+									</p>
+								)}
+								{isSelected ? (
+									<BackgroundImageInRow
+										collection={members}
+										collectionName="members"
+										index={index}
+										item={member}
+										isSelected={isSelected}
+										setAttributes={setAttributes}
+									/>
+								) : null}
+								{isSelected ? (
+									<PlainTextInRow
+										fieldName="name"
+										item={member}
+										index={index}
+										placeholder={__('Name', 'bgb-nrm')}
+										collectionName="members"
+										collection={members}
+										setAttributes={setAttributes}
+									/>
+								) : (
+									<p className="label-wrapper">{member.name}</p>
+								)}
+								{isSelected ? (
+									<PlainTextInRow
+										fieldName="description"
+										item={member}
+										index={index}
+										placeholder={__('Description', 'bgb-nrm')}
+										collectionName="members"
+										collection={members}
+										setAttributes={setAttributes}
+									/>
+								) : (
+									<p className="label-wrapper">{member.description}</p>
+								)}
+
+								{isSelected && (
+									<DeleteRowButton
+										index={index}
+										collection={members}
+										collectionName="members"
+										setAttributes={setAttributes}
+									/>
+								)}
+							</div>
+						);
+					})}
+				</div>
+
+				{isSelected && (
+					<AddRowButton
+						callback={addNewMember}
+						label={__('Add Member: ', 'bgb-nrm')}
+					/>
+				)}
 			</div>
 		);
 	},
 
-	/**
-	 * The save function defines the way in which the different attributes should be combined
-	 * into the final markup, which is then serialized by Gutenberg into post_content.
-	 *
-	 * The "save" property must be specified and must be a valid function.
-	 *
-	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
-	 */
-	save: function( props ) {
+	save: props => {
+		const {
+			attributes: { title, members }
+		} = props;
 		return (
 			<div>
-				<p>— Hello from the frontend.</p>
-				<p>
-					CGB BLOCK: <code>blackbird-gutenberg-blocks</code> is a new Gutenberg block.
-				</p>
-				<p>
-					It was created via{ ' ' }
-					<code>
-						<a href="https://github.com/ahmadawais/create-guten-block">
-							create-guten-block
-						</a>
-					</code>.
-				</p>
+				<section className="team-members-container padding-lg">
+					<div className="container">
+						<div className="row heading heading-icon">
+							<h2>{title}</h2>
+						</div>
+						<ul className="row">
+							{members.map((member, index) => {
+								return (
+									<li className="col-12 col-md-6 col-lg-3" key={index}>
+										<div
+											className="cnt-block equal-hight"
+											style="height: 349px;"
+										>
+											<figure>
+												<img
+													src={member.imgURL}
+													className="img-responsive"
+													alt={member.name}
+												/>
+											</figure>
+											<h3>
+												<a href="http://www.link.com/">{member.name}</a>
+											</h3>
+											<p>{member.description}</p>
+											<ul className="follow-us clearfix">
+												<li>
+													<a href="#">
+														<i className="fa fa-facebook" />
+													</a>
+												</li>
+												<li>
+													<a href="#">
+														<i className="fa fa-twitter" />
+													</a>
+												</li>
+												<li>
+													<a href="#">
+														<i className="fa fa-linkedin" />
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+								);
+							})}
+						</ul>
+					</div>
+				</section>
 			</div>
 		);
-	},
-} );
+	}
+});
