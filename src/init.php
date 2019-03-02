@@ -27,6 +27,8 @@ function blackbird_gutenberg_blocks_cgb_block_assets() { // phpcs:ignore
 		array( 'wp-editor' ) // Dependency to include the CSS after it.
 		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: File modification time.
 	);
+
+	enqueue_load_bootstrap();
 }
 
 // Hook: Frontend assets.
@@ -58,7 +60,28 @@ function blackbird_gutenberg_blocks_cgb_editor_assets() { // phpcs:ignore
 		array( 'wp-edit-blocks' ) // Dependency to include the CSS after it.
 		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: File modification time.
 	);
+
+	enqueue_load_bootstrap();
 }
 
 // Hook: Editor assets.
 add_action( 'enqueue_block_editor_assets', 'blackbird_gutenberg_blocks_cgb_editor_assets' );
+
+
+
+function enqueue_load_bootstrap() {
+	// Add bootstrap CSS
+	wp_register_style( 'bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', false, NULL, 'all' );
+	wp_enqueue_style( 'bootstrap-css' );
+
+	// Add popper js
+	wp_register_script( 'popper-js', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', ['jquery'], NULL, true );
+	wp_enqueue_script( 'popper-js' );
+
+	// Add bootstrap js
+	wp_register_script( 'bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', ['jquery'], NULL, true );
+	wp_enqueue_script( 'bootstrap-js' );
+
+	//Font Awesome
+	wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/5.4.0/css/font-awesome.min.css'); 
+}
