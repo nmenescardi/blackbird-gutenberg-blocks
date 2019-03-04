@@ -12,6 +12,7 @@ import AddRowButton from '../../00-common/01-components/AddRowButton';
 import DeleteRowButton from '../../00-common/01-components/DeleteRowButton';
 import BackgroundImageInRow from '../../00-common/01-components/BackgroundImageInRow';
 import PlainTextInRow from '../../00-common/01-components/PlainTextInRow';
+import LinkContainerInRow from '../../00-common/01-components/LinkContainerInRow';
 
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
@@ -64,7 +65,7 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 					)}
 				</div>
 
-				<div className="team-members-container">
+				<div className="team-members-container-editor">
 					{isSelected && (
 						<p className="general-block-title">{__('Items: ', 'bgb-nrm')}</p>
 					)}
@@ -113,6 +114,15 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 								) : (
 									<p className="label-wrapper">{member.description}</p>
 								)}
+								{isSelected ? (
+									<LinkContainerInRow
+										item={member}
+										index={index}
+										collectionName="members"
+										collection={members}
+										setAttributes={setAttributes}
+									/>
+								) : null}
 
 								{isSelected && (
 									<DeleteRowButton
@@ -139,56 +149,35 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 
 	save: props => {
 		const {
-			attributes: { title, members }
+			attributes: { title, members },
+			className
 		} = props;
 		return (
-			<div>
-				<section className="team-members-container padding-lg">
-					<div className="container">
-						<div className="row heading heading-icon">
-							<h2>{title}</h2>
-						</div>
-						<ul className="row">
-							{members.map((member, index) => {
-								return (
-									<li className="col-12 col-md-6 col-lg-3" key={index}>
-										<div
-											className="cnt-block equal-hight"
-											style="height: 349px;"
-										>
-											<figure>
-												<img
-													src={member.imgURL}
-													className="img-responsive"
-													alt={member.name}
-												/>
-											</figure>
-											<h3>
-												<a href="http://www.link.com/">{member.name}</a>
-											</h3>
-											<p>{member.description}</p>
-											<ul className="follow-us clearfix">
-												<li>
-													<a href="#">
-														<i className="fa fa-facebook" />
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i className="fa fa-twitter" />
-													</a>
-												</li>
-												<li>
-													<a href="#">
-														<i className="fa fa-linkedin" />
-													</a>
-												</li>
-											</ul>
-										</div>
-									</li>
-								);
-							})}
-						</ul>
+			<div className={classnames('full-width-section', className)}>
+				<section className="team-members-container">
+					<div className="main-title">
+						<h2>{title}</h2>
+					</div>
+					<div className="cards-container">
+						{members.map((member, index) => {
+							return (
+								<div className="card-wrapper" key={index}>
+									<figure>
+										<img
+											src={member.imgURL}
+											className="img-responsive"
+											alt={member.name}
+										/>
+									</figure>
+									<h3 className="member-title">
+										<a className="member-link" href={member.buttonURL}>
+											{member.name}
+										</a>
+									</h3>
+									<p className="member-description">{member.description}</p>
+								</div>
+							);
+						})}
 					</div>
 				</section>
 			</div>
