@@ -1,4 +1,12 @@
 node_modules
+.DS_Store
+phpcs.xml
+phpunit.xml
+Thumbs.db
+wp-cli.local.yml
+*.sql
+*.tar.gz
+*.zip
 
 ## Uncomment line below if you prefer to
 ## keep compiled files out of version control
