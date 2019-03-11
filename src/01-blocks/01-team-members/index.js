@@ -16,11 +16,11 @@ import LinkContainerInRow from '../../00-common/01-components/LinkContainerInRow
 
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
-const { PlainText, InspectorControls } = wp.editor;
-const { PanelBody, PanelRow, FormToggle } = wp.components;
+const { PlainText, InspectorControls, PanelColorSettings } = wp.editor;
+const { PanelBody, PanelRow, FormToggle, RangeControl } = wp.components;
 
 registerBlockType('bgb-nrm/block-bgb-nrm-team-members', {
-	title: __('Team Members'),
+	title: __('Team Members', 'bgb-nrm'),
 	icon: 'groups',
 	category: 'common',
 	keywords: [],
@@ -29,19 +29,33 @@ registerBlockType('bgb-nrm/block-bgb-nrm-team-members', {
 			type: 'string',
 			default: 'Our Team'
 		},
-		highContrast: {
+		fullSize: {
 			type: 'boolean',
 			default: false
 		},
 		members: {
 			type: 'array',
 			default: []
+		},
+		backgroundColor: {
+			type: 'string',
+			default: '#ffffff'
+		},
+		paddingTopBottom: {
+			type: 'number',
+			default: 10
 		}
 	},
 
 	edit: props => {
 		const {
-			attributes: { title, members, highContrast },
+			attributes: {
+				title,
+				members,
+				fullSize,
+				backgroundColor,
+				paddingTopBottom
+			},
 			className,
 			isSelected,
 			setAttributes
@@ -50,8 +64,7 @@ registerBlockType('bgb-nrm/block-bgb-nrm-team-members', {
 		const addNewMember = () => {
 			setAttributes({ members: [...members, {}] });
 		};
-		const toggleHighContrast = () =>
-			setAttributes({ highContrast: !highContrast });
+		const toggleFullSize = () => setAttributes({ fullSize: !fullSize });
 
 		return (
 			<div
@@ -60,16 +73,45 @@ registerBlockType('bgb-nrm/block-bgb-nrm-team-members', {
 				})}
 			>
 				<InspectorControls>
-					<PanelBody title={__('High Contrast', 'jsforwpblocks')}>
+					<PanelBody title={__('Full Size', 'bgb-nrm')}>
 						<PanelRow>
-							<label htmlFor="high-contrast-form-toggle">
-								{__('High Contrast', 'jsforwpblocks')}
+							<label htmlFor="full-size-form-toggle">
+								{__('Full Size', 'bgb-nrm')}
 							</label>
 							<FormToggle
-								id="high-contrast-form-toggle"
-								label={__('High Contrast', 'jsforwpblocks')}
-								checked={highContrast}
-								onChange={toggleHighContrast}
+								id="full-size-form-toggle"
+								label={__('Full Size', 'bgb-nrm')}
+								checked={fullSize}
+								onChange={toggleFullSize}
+							/>
+						</PanelRow>
+					</PanelBody>
+
+					<PanelColorSettings
+						title={__('Color Settings', 'bgb-nrm')}
+						colorSettings={[
+							{
+								value: backgroundColor,
+								onChange: backgroundColor => {
+									setAttributes({ backgroundColor });
+								},
+								label: __('Background Color', 'bgb-nrm')
+							}
+						]}
+					/>
+
+					<PanelBody title={__('Padding Top/Bottom', 'bgb-nrm')}>
+						<PanelRow>
+							<RangeControl
+								beforeIcon="arrow-left-alt2"
+								afterIcon="arrow-right-alt2"
+								label=""
+								value={paddingTopBottom}
+								onChange={paddingTopBottom =>
+									setAttributes({ paddingTopBottom })
+								}
+								min={0}
+								max={200}
 							/>
 						</PanelRow>
 					</PanelBody>
@@ -176,11 +218,24 @@ registerBlockType('bgb-nrm/block-bgb-nrm-team-members', {
 
 	save: props => {
 		const {
-			attributes: { title, members },
+			attributes: {
+				title,
+				members,
+				fullSize,
+				backgroundColor,
+				paddingTopBottom
+			},
 			className
 		} = props;
 		return (
-			<div className={classnames('full-width-section', className)}>
+			<div
+				className={classnames({ 'full-width-section': fullSize }, className)}
+				style={{
+					backgroundColor: backgroundColor,
+					paddingTop: paddingTopBottom,
+					paddingBottom: paddingTopBottom
+				}}
+			>
 				<section className="team-members-container">
 					<div className="main-title">
 						<h2>{title}</h2>
