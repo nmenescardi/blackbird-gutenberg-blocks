@@ -28,10 +28,26 @@ $danger: #dc3545;
 $light: #f8f9fa;
 $dark: #343a40;
 $black: rgb(41, 41, 41);
+$gray-border-color: #8d96a0;
+
+// Extends
+%basic-input-text-styles {
+	min-height: 60px;
+	padding: 5px !important;
+	margin: 10px 0 !important;
+	border: 1px solid $gray-border-color !important;
+}
 
 // Helpers
-.full-width-section {
-	margin-left: calc(-100vw / 2 + 100% / 2) !important;
-	margin-right: calc(-100vw / 2 + 100% / 2) !important;
-	max-width: 100vw !important;
+html > body {
+	.full-width-section {
+		margin-left: calc(-100vw / 2 + 100% / 2) !important;
+		margin-right: calc(-100vw / 2 + 100% / 2) !important;
+		max-width: 100vw !important;
+	}
+
+	textarea.editor-plain-text,
+	.editor-url-input input {
+		@extend %basic-input-text-styles;
+	}
 }

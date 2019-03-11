@@ -4,7 +4,14 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
-.full-width-section {
+html > body textarea.editor-plain-text,
+html > body .editor-url-input input {
+  min-height: 60px;
+  padding: 5px !important;
+  margin: 10px 0 !important;
+  border: 1px solid #8d96a0 !important; }
+
+html > body .full-width-section {
   margin-left: calc(-100vw / 2 + 100% / 2) !important;
   margin-right: calc(-100vw / 2 + 100% / 2) !important;
   max-width: 100vw !important; }

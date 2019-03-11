@@ -1,9 +1,28 @@
-/**
- * #.# Editor Styles
- *
- * CSS for just Backend enqueued after style.scss
- * which makes it higher in priority.
- */
-
 .block-selected {
+	.team-members-container-editor {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+
+		& > p.general-block-title {
+			flex: 1 0 100%;
+		}
+
+		.member-wrapper {
+			flex: 0 0 49%;
+			display: flex;
+			flex-direction: column;
+			margin: 0.5%;
+			padding: 1%;
+			border: 1px solid $light;
+
+			.field-wrapper-name {
+				margin-top: auto;
+			}
+
+			input {
+				width: 100% !important;
+			}
+		}
+	}
 }

@@ -1,7 +1,7 @@
 /**
  *
  * BLOCK: Team Members
- * block-gbg-nrm-team-members
+ * block-bgb-nrm-team-members
  *
  */
 import './style.scss';
@@ -16,9 +16,10 @@ import LinkContainerInRow from '../../00-common/01-components/LinkContainerInRow
 
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
-const { PlainText } = wp.editor;
+const { PlainText, InspectorControls } = wp.editor;
+const { PanelBody, PanelRow, FormToggle } = wp.components;
 
-registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
+registerBlockType('bgb-nrm/block-bgb-nrm-team-members', {
 	title: __('Team Members'),
 	icon: 'groups',
 	category: 'common',
@@ -28,6 +29,10 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 			type: 'string',
 			default: 'Our Team'
 		},
+		highContrast: {
+			type: 'boolean',
+			default: false
+		},
 		members: {
 			type: 'array',
 			default: []
@@ -36,7 +41,7 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 
 	edit: props => {
 		const {
-			attributes: { title, members },
+			attributes: { title, members, highContrast },
 			className,
 			isSelected,
 			setAttributes
@@ -45,6 +50,8 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 		const addNewMember = () => {
 			setAttributes({ members: [...members, {}] });
 		};
+		const toggleHighContrast = () =>
+			setAttributes({ highContrast: !highContrast });
 
 		return (
 			<div
@@ -52,6 +59,22 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 					'block-selected': isSelected
 				})}
 			>
+				<InspectorControls>
+					<PanelBody title={__('High Contrast', 'jsforwpblocks')}>
+						<PanelRow>
+							<label htmlFor="high-contrast-form-toggle">
+								{__('High Contrast', 'jsforwpblocks')}
+							</label>
+							<FormToggle
+								id="high-contrast-form-toggle"
+								label={__('High Contrast', 'jsforwpblocks')}
+								checked={highContrast}
+								onChange={toggleHighContrast}
+							/>
+						</PanelRow>
+					</PanelBody>
+				</InspectorControls>
+
 				<div className="title-wrapper">
 					<p className="general-block-title">{__('Title:', 'bgb-nrm')}</p>
 					{isSelected ? (
@@ -89,28 +112,32 @@ registerBlockType('gbg-nrm/block-gbg-nrm-team-members', {
 									/>
 								) : null}
 								{isSelected ? (
-									<PlainTextInRow
-										fieldName="name"
-										item={member}
-										index={index}
-										placeholder={__('Name', 'bgb-nrm')}
-										collectionName="members"
-										collection={members}
-										setAttributes={setAttributes}
-									/>
+									<div className="field-wrapper field-wrapper-name">
+										<PlainTextInRow
+											fieldName="name"
+											item={member}
+											index={index}
+											placeholder={__('Name', 'bgb-nrm')}
+											collectionName="members"
+											collection={members}
+											setAttributes={setAttributes}
+										/>
+									</div>
 								) : (
 									<p className="label-wrapper">{member.name}</p>
 								)}
 								{isSelected ? (
-									<PlainTextInRow
-										fieldName="description"
-										item={member}
-										index={index}
-										placeholder={__('Description', 'bgb-nrm')}
-										collectionName="members"
-										collection={members}
-										setAttributes={setAttributes}
-									/>
+									<div className="field-wrapper">
+										<PlainTextInRow
+											fieldName="description"
+											item={member}
+											index={index}
+											placeholder={__('Description', 'bgb-nrm')}
+											collectionName="members"
+											collection={members}
+											setAttributes={setAttributes}
+										/>
+									</div>
 								) : (
 									<p className="label-wrapper">{member.description}</p>
 								)}

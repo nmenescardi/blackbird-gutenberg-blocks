@@ -9,20 +9,21 @@
  * License: GPL2+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
  *
- * @package CGB
  */
 
 
 /**
 	* Blackbird Gutenberg Blocks is a Gutenberg plugin created via create-guten-block.
 */
-	
+
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
-/**
- * Block Initializer.
- */
-require_once plugin_dir_path( __FILE__ ) . 'src/init.php';
+define('INCPATH', realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
+require_once INCPATH . 'vendor\autoload.php';
+
+$pluginsDir = plugins_url('/', dirname(__FILE__)) . basename(__DIR__);
+$bgb = new BlackbirdGutenbergBlocks\BlackbirdGutenbergBlocks($pluginsDir);
+$bgb->init();
